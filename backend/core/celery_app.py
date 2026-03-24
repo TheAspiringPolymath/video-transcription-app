@@ -1,10 +1,12 @@
 from celery import Celery
 
+from core.config import settings
+
 app = Celery(
-    'worker',
-    broker='redis://redis:6379/0',
-    backend='redis://redis:6379/0',
+    "worker",
+    broker=settings.redis_url,
+    backend=settings.redis_url,
 )
-app.conf.task_serializer = 'json'
-app.conf.result_serializer = 'json'
-app.conf.accept_content = ['json']
+app.conf.task_serializer = "json"
+app.conf.result_serializer = "json"
+app.conf.accept_content = ["json"]
