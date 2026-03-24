@@ -1,0 +1,21 @@
+schema: 1
+story: '1.1'
+gate: CONCERNS
+status_reason: 'All 4 acceptance criteria are structurally met. Two medium maintainability issues present — missing CMD in backend Dockerfile and WeasyPrint system dependencies — neither blocks current story scope but should be addressed in relevant future stories.'
+reviewer: Quinn
+updated: '2026-03-24T00:00:00Z'
+top_issues:
+  - id: MNT-001
+    severity: medium
+    finding: 'Backend Dockerfile has no CMD instruction — relies entirely on docker-compose command: override. Standalone docker run produces no process.'
+    suggested_action: 'Add CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"] as default in Dockerfile. Address in Story 1.2 (Backend Config).'
+  - id: MNT-002
+    severity: medium
+    finding: 'weasyprint==62.3 in requirements.txt requires system libraries (libpango, libcairo, libfontconfig) not present in python:3.11-slim image. Will fail at import time when PDF generation is invoked.'
+    suggested_action: 'Add apt-get install -y libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libfontconfig1 libcairo2 to Dockerfile when PDF story is implemented. Or defer weasyprint to a requirements-pdf.txt until needed.'
+  - id: TEST-001
+    severity: low
+    finding: 'pytest, pytest-asyncio, pytest-cov included in main requirements.txt — installed in all Docker images including production builds.'
+    suggested_action: 'Extract to requirements-dev.txt and reference with pip install -r requirements.txt -r requirements-dev.txt in test stage. Low priority for personal-use app.'
+waiver:
+  active: false
